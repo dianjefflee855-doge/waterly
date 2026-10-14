@@ -1,0 +1,75 @@
+{
+  "name": "waterly",
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "Waterly - multi-app chat auto-reply assistant (open source, self-hosted, bring your own key)",
+  "main": "dist/main/main.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json && vite build",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "fixtures": ".venv/bin/python scripts/gen_synth.py",
+    "start": "electron .",
+    "icon": "python3 scripts/make_icon.py",
+    "native": "bash scripts/build_native.sh",
+    "dist:mac": "npm run build && npm run native && electron-builder --mac dir --arm64 && codesign --force --sign - release/mac-arm64/Waterly.app/Contents/Resources/native/mac/build/ncwatch release/mac-arm64/Waterly.app/Contents/Resources/native/mac/build/waterly-axhelper && codesign --force --deep --sign - --requirements '=designated => identifier \"com.waterly.app\"' release/mac-arm64/Waterly.app"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@types/pngjs": "^6.0.5",
+    "@types/qrcode": "^1.5.6",
+    "electron": "^44.7.0",
+    "electron-builder": "^26.15.3",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.4"
+  },
+  "dependencies": {
+    "pngjs": "^7.0.0",
+    "qrcode": "^1.5.4"
+  },
+  "build": {
+    "appId": "com.waterly.app",
+    "productName": "Waterly",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "extraResources": [
+      {
+        "from": "native/mac/build/waterly-axhelper",
+        "to": "native/mac/build/waterly-axhelper"
+      },
+      {
+        "from": "native/mac/build/ncwatch",
+        "to": "native/mac/build/ncwatch"
+      },
+      {
+        "from": "sidecar",
+        "to": "sidecar",
+        "filter": [
+          "*.py",
+          "requirements.txt"
+        ]
+      }
+    ],
+    "mac": {
+      "target": [
+        "dir"
+      ],
+      "icon": "build/icon.icns",
+      "category": "public.app-category.productivity",
+      "identity": null,
+      "hardenedRuntime": false,
+      "extendInfo": {
+        "NSAppleEventsUsageDescription": "Waterly 需要控制聊天应用窗口",
+        "LSMinimumSystemVersion": "13.0"
+      }
+    }
+  }
+}

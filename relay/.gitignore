@@ -1,0 +1,4 @@
+.wrangler/
+node_modules/
+.mac-agent-state.json
+.dev.vars

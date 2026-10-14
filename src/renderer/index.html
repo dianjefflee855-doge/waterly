@@ -1,0 +1,71 @@
+<!doctype html><html lang="zh"><head><meta charset="utf-8"><title>Waterly 控制台</title><link rel="stylesheet" href="./style.css"></head>
+<body>
+<aside><div class="logo">💧 Waterly</div>
+<nav id="nav">
+ <a data-p="overview" class="on">总览</a><a data-p="feed">新消息</a><a data-p="drafts">待审批<span id="badge"></span></a>
+ <a data-p="rules">会话规则</a><a data-p="send">发送方式</a><a data-p="llm">模型设置</a><a data-p="remote">远程访问</a><a data-p="logs">日志</a></nav>
+<div class="master"><div>自动回复</div><label class="sw"><input type="checkbox" id="auto"><span></span></label>
+<small id="autoHint">已关闭</small></div></aside>
+<main>
+<div id="permBanner" class="permbar" hidden>⚠ 权限未开启，功能受限 <button id="permReopen">打开权限引导</button></div>
+<div id="permGuide" class="permmask" hidden><div class="permbox">
+ <h1>开启权限</h1><p class="sub">Waterly 需要以下两个 macOS 权限才能读取聊天列表。授权后会自动继续，不需要重启（屏幕录制可能需要重启应用）。</p>
+ <div class="perm" id="perm-accessibility"><h2>辅助功能 <span class="st"></span></h2>
+  <p>用途：读取聊天列表与界面元素、在你批准后点击发送。</p>
+  <ol><li>打开 系统设置 &gt; 隐私与安全性 &gt; 辅助功能</li><li>找到 Waterly，打开开关（没有就点「+」添加 Waterly.app）</li></ol>
+  <button data-popen="accessibility">打开辅助功能设置</button> <button class="ghost" data-preq="accessibility">弹出系统授权提示</button></div>
+ <div class="perm" id="perm-screen"><h2>屏幕录制 <span class="st"></span></h2>
+  <p>用途：截图做 OCR 识别 Telegram 等界面。</p>
+  <ol><li>打开 系统设置 &gt; 隐私与安全性 &gt; 屏幕与系统音频录制</li><li>找到 Waterly，打开开关</li><li>如果系统提示，按要求退出并重新打开 Waterly</li></ol>
+  <button data-popen="screen">打开屏幕录制设置</button> <button class="ghost" data-preq="screen">弹出系统授权提示</button></div>
+ <div class="permfoot"><small>正在每 2 秒检测一次…</small><button class="ghost" id="permLater">稍后再说</button></div>
+</div></div>
+<section id="p-overview" class="page on"><h1>总览</h1><div id="cards" class="cards"></div>
+ <div class="split"><div class="panel"><h2>最新消息</h2><ul id="feedMini" class="feed"></ul></div>
+ <div class="panel"><h2>待审批草稿</h2><div id="draftMini"></div></div></div></section>
+<section id="p-feed" class="page"><h1>新消息</h1>
+ <div class="panel form" id="histPanel"><div class="row"><b>历史记录</b><span id="hInfo">—</span></div>
+ <label>历史保留天数<input id="hDays" type="number" min="1" max="365" step="1" value="30" title="超过天数的消息自动清理，1–365"></label>
+ <small class="hint">消息保存在本机 ~/.config/waterly/history.jsonl（仅本人可读），重启不会丢；超过保留天数自动清理。</small>
+ <div class="row"><button id="hSave">保存</button><button id="hClear" class="ghost">清空历史</button></div></div><p class="sub">来源：系统通知横幅（提示）+ 聊天列表扫描（以列表为准）。横幅时间是捕获时间，不是发送时间。</p><ul id="feed" class="feed"></ul></section>
+<section id="p-drafts" class="page"><h1>待审批</h1><p class="sub">每条回复都必须由你点「发送」才会发出。</p>
+ <div class="panel row"><select id="ndApp"><option value="wechat">微信</option><option value="whatsapp">WhatsApp</option><option value="telegram">Telegram</option></select>
+ <input id="ndConv" placeholder="会话名"><input id="ndText" placeholder="手写草稿内容" class="grow"><button id="ndAdd">加入队列</button></div><div id="draftErr" class="derr" hidden></div><div id="drafts"></div></section>
+<section id="p-rules" class="page"><h1>会话规则</h1><p class="sub">有白名单时只回复白名单会话；黑名单会话永不回复。</p>
+ <div class="panel row"><select id="rApp"><option value="wechat">微信</option><option value="whatsapp">WhatsApp</option><option value="telegram">Telegram</option></select>
+ <input id="rConv" placeholder="会话名" class="grow"><select id="rMode"><option value="whitelist">白名单</option><option value="blacklist">黑名单</option></select>
+ <label><input type="checkbox" id="rReply" checked> 允许回复</label><button id="rAdd">保存规则</button></div><table id="rules"></table></section>
+<section id="p-send" class="page"><h1>发送方式</h1><p class="sub">适用于微信、WhatsApp 个人号。无论哪种方式，每条回复都要先在「待审批」里由你确认。</p>
+ <label class="row lockfb"><input type="checkbox" id="lockFb" checked> 锁屏时自动改为复制（Mac 锁屏/无人时，「自动输入发送」改为复制到剪贴板，不在锁屏下操作微信）</label>
+ <div class="panel" id="sendModes"></div></section>
+<section id="p-llm" class="page"><h1>模型设置</h1><div class="panel form">
+ <label>服务商<select id="lProv"><option value="minimax">MiniMax</option><option value="openai">OpenAI 兼容接口（自填地址和模型）</option></select></label><label>模型<input id="lModel"></label><label>接口地址（Base URL）<input id="lBase"></label>
+ <label>API Key（只保存在本机 ~/.config/waterly/config.json）<input id="lKey" type="password" autocomplete="off" placeholder="留空表示不修改"></label>
+ <label>上下文条数<input id="lCtx" type="number" min="5" max="100" step="1" value="20" title="发给模型的最近消息条数，5–100"></label>
+ <small class="hint">生成草稿时只取最近 N 条消息作为上下文，默认 20，可调 5–100。</small>
+ <fieldset class="persona"><legend>回复身份</legend>
+  <label class="pr"><input type="radio" name="persona" value="self" checked> 本人口吻</label>
+  <label class="pr"><input type="radio" name="persona" value="support"> 客服</label>
+  <label class="pr"><input type="radio" name="persona" value="assistant"> 助理</label>
+  <label class="pr"><input type="radio" name="persona" value="custom"> 自定义</label>
+  <textarea id="lPersonaCustom" rows="3" placeholder="自定义身份说明，例如：用老板口吻，简短果断" hidden></textarea>
+  <small class="hint">会写入发给 MiniMax 的系统提示。选「自定义」时用下方说明；其它预设可再在「补充说明」里加要求。</small>
+ </fieldset>
+ <label>补充说明 / 系统提示<textarea id="lSys" rows="4" placeholder="可选：附加到预设身份，例如「多用表情」「别提价格」"></textarea></label>
+ <button id="lSave">保存</button></div></section>
+<section id="p-remote" class="page"><h1>远程访问</h1><div class="panel form"><p class="sub">中继和网页端都由你自己部署（见仓库 relay/README.md），没有官方服务器。</p>
+ <label>中继地址<input id="cRelay" placeholder="例如 https://relay.example.com"></label><label>网页端地址<input id="cWeb" placeholder="例如 https://you.github.io/waterly/"></label>
+ <label>注册密钥（可选，与中继的 REGISTRATION_KEY 一致）<input id="cReg" type="password" autocomplete="off" placeholder="留空表示不修改"></label><button id="cSave">保存中继设置</button> <span id="cMsg"></span></div><p class="sub">打开后，本机主动连到 Waterly 中继，配对过的手机可以远程查看会话和草稿。内容端到端加密，中继看不到。手机上点发送也要先确认，并且按「发送方式」执行（默认复制到剪贴板）。</p>
+ <div class="panel"><div class="row"><b>远程访问</b><label class="sw"><input type="checkbox" id="rmOn"><span></span></label><span id="rmSt">已关闭</span></div>
+ <div class="row"><button id="rmPair">添加设备</button></div>
+ <div id="rmPairBox" hidden><p>在手机上打开<span id="rmWebUrl">你自己部署的网页端</span>，点「连接 Mac」，扫码或输入配对码：</p><div class="paircode" id="rmCode"></div><img id="rmQr" alt="配对二维码"><small id="rmExp"></small></div>
+ <h2>已配对设备</h2><table id="rmDevs"></table></div></section>
+<section id="p-logs" class="page"><h1>日志</h1><div id="logs" class="logs"></div></section>
+</main>
+<script type="module" src="./main.ts"></script><div id="setup" class="modal" hidden><div class="panel form"><h1>欢迎使用 Waterly</h1><p class="sub">Waterly 不内置任何 API Key。请填你自己的模型服务，设置只保存在本机。</p>
+ <label>服务商<select id="sProv"><option value="minimax">MiniMax</option><option value="openai">OpenAI 兼容接口</option></select></label>
+ <label>接口地址（Base URL）<input id="sBase"></label><label>模型<input id="sModel"></label>
+ <label>API Key<input id="sKey" type="password" autocomplete="off"></label>
+ <p class="sub">⚠️ 微信等平台禁止自动化操作。Waterly 默认只生成草稿、复制到剪贴板；开启「自动输入发送」可能导致封号，风险由你自行承担。</p>
+ <button id="sSave">保存并开始</button> <button id="sLater" class="ghost">稍后设置</button> <span id="sMsg"></span></div></div>
+</body></html>

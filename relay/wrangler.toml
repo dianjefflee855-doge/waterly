@@ -1,0 +1,27 @@
+name = "waterly-relay"
+main = "src/index.js"
+compatibility_date = "2025-09-01"
+
+# 每个账号一个 Room（Durable Object），配对码目录一个全局 Directory DO
+[[durable_objects.bindings]]
+name = "ROOMS"
+class_name = "Room"
+
+[[durable_objects.bindings]]
+name = "DIRECTORY"
+class_name = "Directory"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Room", "Directory"]
+
+[vars]
+# 允许跨域调用 relay 的网页来源（逗号分隔）。本地开发用 *
+ALLOWED_ORIGINS = "*"
+DEVICE_TOKEN_TTL_DAYS = "30"
+PAIR_CODE_TTL_SEC = "300"
+
+# 生产部署需设置的 secret（不要写进本文件）：
+#   wrangler secret put REGISTRATION_KEY   # 可选：设置后，Mac 端注册新账号必须携带同一个值（防止陌生人用你的中继）
+# routes 由部署方配置，例如：
+# routes = [{ pattern = "relay.example.com", custom_domain = true }]

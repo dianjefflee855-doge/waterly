@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.venv/
+.env
+*.env
+__pycache__/
+release/
+build/icon.iconset/
+native/mac/grokcall/build/
+.mac-agent-state.json
+*.bak-*.html

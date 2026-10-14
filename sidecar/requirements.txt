@@ -1,0 +1,5 @@
+rapidocr_onnxruntime
+pillow
+numpy
+# opencv >=4.11 arm64 KleidiCV resize segfaults on macOS (SIGSEGV in kleidicv_resize_generic_stripe_u8)
+opencv-python==4.10.0.84  # 4.11+ ships KleidiCV; 4.14 and 5.0 both crashed on arm64

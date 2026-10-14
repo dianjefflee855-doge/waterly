@@ -1,0 +1,10 @@
+{
+  "name": "waterly-relay",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --port 8787",
+    "test": "node --test test/*.test.js"
+  },
+  "devDependencies": { "wrangler": "^4.0.0", "ws": "^8.18.0" }
+}
