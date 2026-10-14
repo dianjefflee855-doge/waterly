@@ -5,7 +5,7 @@
 <h1 align="center">Waterly</h1>
 
 <p align="center"><b>开源、自部署的多平台聊天 AI 回复助手：AI 起草，你来拍板。</b></p>
-<p align="center"><i>Open-source, self-hosted AI reply assistant for WeChat, WhatsApp & Telegram — AI drafts, you decide.</i></p>
+<p align="center"><a href="README.en.md">English</a> | <a href="README.md">简体中文</a></p>
 
 <p align="center">
   <a href="LICENSE"><img alt="MIT" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
@@ -22,7 +22,7 @@
 
 - [为什么是 Waterly](#为什么是-waterly) · [功能](#功能) · [截图](#截图) · [演示视频](#演示视频) · [架构](#架构)
 - [快速开始](#快速开始) · [自带 API Key](#自带-api-keybyo-key) · [自部署中继与网页端](#自部署中继与网页端)
-- [风险声明](#风险声明) · [FAQ](#faq) · [English](#english) · [License](#license)
+- [风险声明](#风险声明) · [FAQ](#faq) · [English](README.en.md) · [License](#license)
 
 ## 为什么是 Waterly
 
@@ -172,13 +172,7 @@ Mac 上 Waterly →「远程访问」：填中继地址、网页端地址（和�
 
 ## English
 
-**Waterly** is an open-source (MIT), self-hosted, Mac-first assistant that watches your chat apps (WeChat, WhatsApp, Telegram), drafts replies with **your own** LLM key (MiniMax or any OpenAI-compatible endpoint), and lets you approve every message before it is sent. There is no central server: optionally deploy the tiny Cloudflare relay and the single-file web client to your own accounts to review and approve drafts from your phone, end-to-end encrypted.
-
-- **Quick start:** `npm install && npm run build && npm run native && npm start`, then enter your API key in the first-run wizard.
-- **Relay:** `cd relay && ./scripts/deploy.sh --origin https://your-web-host` (see [`relay/README.md`](relay/README.md)).
-- **Web client:** serve `docs/` with GitHub Pages or any static host; set the relay in `<meta name="waterly-relay">`, in the page, or via `?relay=`.
-- **Safety:** auto-reply is off by default, drafts only, every send needs confirmation, clipboard is the default send mode. Automating WeChat can get your account banned — read [DISCLAIMER.md](DISCLAIMER.md).
-- Security model: [SECURITY.md](SECURITY.md) · Contributing: [CONTRIBUTING.md](CONTRIBUTING.md)
+The full English documentation is in **[README.en.md](README.en.md)**.
 
 ## License
 
